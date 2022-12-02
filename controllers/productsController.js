@@ -22,11 +22,16 @@ controller.route('/')
         description: httpRequest.body.description,
         price: httpRequest.body.price
     }
-    
+    if ( httpRequest.body.category != 0 && httpRequest.body.imageURL != 0 &&  httpRequest.body.title != 0 && httpRequest.body.price != 0) {
+        if (httpRequest.body.category != 'Missing' && httpRequest.body.imageURL.length > 4 &&  httpRequest.body.title.length > 4 && httpRequest.body.price > 9 )
+   
+
     products.push(product)
+}
     httpResponse.status(201).json(product)
-    
-})
+}
+
+)
 .get ((httpRequest, httpResponse) => {
     httpResponse.status(200).json(products)
 })
