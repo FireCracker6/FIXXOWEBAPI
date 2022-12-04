@@ -1,11 +1,17 @@
 const express = require('express')
-let products = require('../data/simulated_database')
+const products = require('../data/simulated_database')
 const controller = express.Router()
 
-
+/* console.log(products) */
 
 controller.param("articleNumber",  (req, res, next, articleNumber) => {
     req.product = products.find(product => product.articleNumber == articleNumber)
+    next()
+
+})
+//get tagged products
+controller.param("tag",  (req, res, next, tag) => {
+    req.products = products.filter(x => x.tag === tag)
     next()
 
 })
@@ -20,6 +26,7 @@ controller.route('/')
         imageURL: httpRequest.body.imageURL,
         title: httpRequest.body.title,
         description: httpRequest.body.description,
+        rating: httpRequest.body.rating,
         price: httpRequest.body.price
     }
     if ( httpRequest.body.category != 0 && httpRequest.body.imageURL != 0 &&  httpRequest.body.title != 0 && httpRequest.body.price != 0) {
@@ -38,7 +45,7 @@ controller.route('/')
 
 
 // http://localhost:5000/api/products/{id}
-controller.route('/:articleNumber')
+controller.route('/details/:articleNumber')
 .get((httpRequest, httpResponse) => {
     if (httpRequest.product != undefined) {
         httpResponse.status(200).json(httpRequest.product)
@@ -47,6 +54,30 @@ controller.route('/:articleNumber')
     else
     httpResponse.status(404).json()
 })
+controller.route('/:tag').get((req, res) => {
+
+    if (req.products != undefined )
+    res.status(200).json(req.products)
+   else
+    res.status(404).json()
+
+    
+
+})
+controller.route('/:tag/:take').get((req, res) => {
+    let list = []
+
+    for (let i = 0; i < req.params.take; i++)
+        list.push(req.products[i])
+  
+
+  res.status(200).json(list) 
+  console.log('hämtar list')
+console.log(list)
+   
+})
+
+
 .put((httpRequest, httpResponse) => {
     if (httpRequest.product != undefined) {
       products.forEach(product => {
@@ -55,6 +86,7 @@ controller.route('/:articleNumber')
         product.imageURL = httpRequest.body.imageURL ? httpRequest.body.imageURL : product.imageURL
         product.title = httpRequest.body.title ? httpRequest.body.title : product.title
         product.description = httpRequest.body.description ? httpRequest.body.description : product.description
+        product.rating = httpRequest.body.rating ? httpRequest.body.rating : product.rating
         product.price = httpRequest.body.price ? httpRequest.body.price : product.price
       }
       })
