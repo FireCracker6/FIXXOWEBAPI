@@ -54,31 +54,8 @@ controller.route('/details/:articleNumber')
     else
     httpResponse.status(404).json()
 })
-controller.route('/:tag').get((req, res) => {
-
-    if (req.products != undefined )
-    res.status(200).json(req.products)
-   else
-    res.status(404).json()
-
-    
-
-})
-controller.route('/:tag/:take').get((req, res) => {
-    let list = []
-
-    for (let i = 0; i < req.params.take; i++)
-        list.push(req.products[i])
-  
-
-  res.status(200).json(list) 
-  console.log('hämtar list')
-console.log(list)
-   
-})
-
-
 .put((httpRequest, httpResponse) => {
+
     if (httpRequest.product != undefined) {
       products.forEach(product => {
       if (product.articleNumber == httpRequest.product.articleNumber) {
@@ -108,6 +85,33 @@ console.log(list)
     httpResponse.status(404).json()
     
 })
+
+
+
+
+controller.route('/:tag').get((req, res) => {
+
+    if (req.products != undefined )
+    res.status(200).json(req.products)
+   else
+    res.status(404).json()
+
+})
+
+controller.route('/:tag/:take').get((req, res) => {
+    let list = []
+
+    for (let i = 0; i < req.params.take; i++)
+        list.push(req.products[i])
+  
+
+  res.status(200).json(list) 
+  console.log('hämtar list')
+console.log(list)
+   
+})
+
+
 
 
 module.exports = controller
