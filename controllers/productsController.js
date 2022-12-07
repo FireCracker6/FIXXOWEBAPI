@@ -2,6 +2,7 @@ const express = require('express')
 const Products = require('../schemas/productSchema')
 const productSchema = require('../schemas/productSchema')
 const controller = express()
+const { authorize } = require('../middleswares/authorization')
 
 
 // unsecured routes
@@ -105,7 +106,7 @@ controller.route('/product/details/:articleNumber').get(async (req, res) => {
 }) 
 
 // secured routes
-controller.route('/').post(async(req, res) => {
+controller.route('/').post(authorize, async(req, res) => {
     const { _id, title, category, imageURL, description, tag, price, rating  } = req.body
 
     if(!title || !price )
@@ -133,9 +134,7 @@ controller.route('/').post(async(req, res) => {
 
 })
 
-
-
-
+// update product
  controller.route('/product/details/:articleNumber').put(async(req, res) => {
     let { _id, title, category, imageURL, description, tag, price, rating  } = req.body
 
@@ -163,11 +162,9 @@ controller.route('/').post(async(req, res) => {
         product.price = price ? price : product.price
         product.rating = rating ? rating : product.rating
 
-      
         console.log(product._id)
         console.log(req.params.articleNumber)
         console.log(product)
-
       
       res.status(200).json({text: `Product with article number ${product._id} was updated successfully`})
     }

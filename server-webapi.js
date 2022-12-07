@@ -17,6 +17,7 @@ app.use(express.urlencoded({extended: false}))
 // routes
 
  app.use('/api/products', require("./controllers/productsController")) 
+ app.use('/api/authentication', require("./controllers/authenticationController"))
 
 
 // initalize
