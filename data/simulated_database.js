@@ -1,7 +1,7 @@
 /* const users = []
 module.exports = users */
 
-const products = 
+const productsOLD = 
     [
         {"tag": "", "articleNumber":1,"category":"Jackets","imageURL":"https://saxeit.se/fixxoImages/pinquin.png","title":"Warm winter Coat","description":"","price":"5655.00"},
         {"tag": "", "articleNumber":2,"category":"Jackets","imageURL":"https://saxeit.se/fixxoImages/pinquin.png","title":"Warm winter Coat","description":"","price":"655.00"},
@@ -28,4 +28,4 @@ const products =
 
     
 
-module.exports = products
+module.exports = productsOLD
