@@ -8,5 +8,4 @@ const initMongoDB = async () => {
     
 }
 
-
 module.exports = initMongoDB

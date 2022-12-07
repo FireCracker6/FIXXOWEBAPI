@@ -106,7 +106,7 @@ controller.route('/product/details/:articleNumber').get(async (req, res) => {
 }) 
 
 // secured routes
-controller.route('/').post(authorize, async(req, res) => {
+controller.route('/').post(/* authorize,  */async(req, res) => {
     const { _id, title, category, imageURL, description, tag, price, rating  } = req.body
 
     if(!title || !price )
@@ -144,23 +144,26 @@ controller.route('/').post(authorize, async(req, res) => {
         title : title ? title : product.title,
         category : category ? category : product.category,
         imageURL : imageURL ? imageURL : product.imageURL,
-        description : description ? description : product.description,
+  description : description ? description : product.description,
         tag : tag ? tag :  product.tag, 
         price : price ? price : product.price,
         rating : rating ? rating : product.rating,
 
     })
+    
+
+    
 
     if (product._id !== undefined) {
 
-   product._id = req.params.articleNumber  
+  /*  product._id = req.params.articleNumber  
      product.title = title ? title : product.title
      product.category = category ? category : product.category
         product.imageURL = imageURL ? imageURL : product.imageURL
         product.description = description ? description : product.description
         product.tag = tag ? tag :  product.tag
         product.price = price ? price : product.price
-        product.rating = rating ? rating : product.rating
+        product.rating = rating ? rating : product.rating */
 
         console.log(product._id)
         console.log(req.params.articleNumber)
