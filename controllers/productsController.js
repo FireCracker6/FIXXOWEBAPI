@@ -135,48 +135,63 @@ controller.route('/').post(/* authorize,  */async(req, res) => {
 })
 
 // update product
- controller.route('/product/details/:articleNumber').put(async(req, res) => {
-    let { _id, title, category, imageURL, description, tag, price, rating  } = req.body
 
-    const product = await productSchema.findByIdAndUpdate(req.params.articleNumber, {
+controller.route('/product/details/:articleNumber').put(/* authorize,  */async(req, res) => {
+    const { _id, title, category, imageURL, description, tag, price, rating  } = req.body
+
+    
+    const item_exists = await productSchema.findById(req.params.articleNumber)
+    if (item_exists)
+    {
+        const product = await productSchema.findOneAndUpdate({
+          _id : _id,
+            title : title ? title : product.title,
+            category : category ? category : product.category,
+            imageURL: imageURL ? imageURL : product.imageURL,
+            description  : description ? description : product.description,
+            tag: tag ? tag : product.tag, 
+            price: price ? price : product.price,
+            rating: rating ? rating : product.rating, 
+        })
+        if (product)
+        res.status(201).json({text: `Product with article number ${product.id} was updated successfully`})
+        else
+        res.status(400).json({text: 'something went wrong when we tried to update the product.'})
+    }
+
+})/*  controller.route('/product/details/:articleNumber').put(async(req, res) => {
+    let { _id, title, category, imageURL, description, tag, price, rating  } = req.body
+    const item = await productSchema.findById(req.params.articleNumber)
+
+if (!item) {
+     let product = await productSchema.findOneAndUpdate({title, category, imageURL, description,
+    tag, price, rating}, {
         
         _id : req.params.articleNumber,  
         title : title ? title : product.title,
         category : category ? category : product.category,
         imageURL : imageURL ? imageURL : product.imageURL,
-  description : description ? description : product.description,
+        description : description ? description : product.description,
         tag : tag ? tag :  product.tag, 
         price : price ? price : product.price,
         rating : rating ? rating : product.rating,
 
     })
-    
-
-    
-
-    if (product._id !== undefined) {
-
-  /*  product._id = req.params.articleNumber  
-     product.title = title ? title : product.title
-     product.category = category ? category : product.category
-        product.imageURL = imageURL ? imageURL : product.imageURL
-        product.description = description ? description : product.description
-        product.tag = tag ? tag :  product.tag
-        product.price = price ? price : product.price
-        product.rating = rating ? rating : product.rating */
-
-        console.log(product._id)
-        console.log(req.params.articleNumber)
-        console.log(product)
-      
-      res.status(200).json({text: `Product with article number ${product._id} was updated successfully`})
-    }
+    if (item) 
+    res.status(201).json({text: `Product with article number ${item.id} was updated successfully`})
    
     else
-    res.status(404).json({text: 'something went wrong when we tried to update the product.'})
+    res.status(400).json({text: 'something went wrong when we tried to update the product.'})
+}
+
+ })
+ */
 
 
-}) 
+
+
+
+    
 
 // remove product
 controller.route('/:articleNumber').delete(async(req, res) => {
