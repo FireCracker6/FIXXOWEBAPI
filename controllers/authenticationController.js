@@ -7,7 +7,6 @@ const { generateAccessToken } = require('../middleswares/authorization')
 const userSchema = require('../schemas/userSchema')
 
 
-
 // unsecured routes
  controller.route('/signup').post(async(req, res) => {
     const {firstName, lastName, email, password} = req.body

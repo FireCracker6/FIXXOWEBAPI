@@ -5,6 +5,7 @@ const controller = express()
 const { authorize } = require('../middleswares/authorization')
 
 
+
 // unsecured routes
 
 controller.route('/').get(async (req, res) => {
@@ -15,7 +16,7 @@ controller.route('/').get(async (req, res) => {
     for (let product of list) {
       
         products.push( {
-            articleNumber: product._id,
+            _id: product._id,
             title: product.title,
             category: product.category,
             imageURL: product.imageURL,
@@ -40,7 +41,7 @@ controller.route('/').get(async (req, res) => {
    if (list) {
     for (let product of list) {
         products.push( {
-            articleNumber: product._id,
+            _id: product._id,
             title: product.title,
             category: product.category,
             imageURL: product.imageURL,
@@ -65,7 +66,7 @@ controller.route('/:tag/:take').get(async (req, res) => {
     if (list) {
         for (let product of list) {
             products.push( {
-                articleNumber: product._id,
+                _id: product._id,
                 title: product.title,
                 category: product.category,
                 imageURL: product.imageURL,
@@ -85,13 +86,13 @@ controller.route('/:tag/:take').get(async (req, res) => {
 
 })
 
-controller.route('/product/details/:articleNumber').get(async (req, res) => {
+controller.route('/product/details/:_id').get(async (req, res) => {
     
 
-    const item = await productSchema.findById(req.params.articleNumber)
+    const item = await productSchema.findById(req.params._id)
     if (item) {
   res.status(200).json({
-    articleNumber: item._id,
+    _id: item._id,
     title: item.title,
     category: item.category,
     imageURL: item.imageURL,
@@ -134,13 +135,14 @@ controller.route('/').post(/* authorize,  */async(req, res) => {
 
 })
 
+
 // update product
 
-controller.route('/product/details/:articleNumber').put(/* authorize,  */async(req, res) => {
+controller.route('/product/details/:_id').put(/* authorize,  */async(req, res) => {
     const { _id, title, category, imageURL, description, tag, price, rating  } = req.body
 
-    
-    const item_exists = await productSchema.findById(req.params.articleNumber)
+
+    const item_exists = await productSchema.findById(req.params._id)
     if (item_exists)
     {
         const product = await productSchema.findOneAndUpdate({
@@ -159,15 +161,16 @@ controller.route('/product/details/:articleNumber').put(/* authorize,  */async(r
         res.status(400).json({text: 'something went wrong when we tried to update the product.'})
     }
 
-})/*  controller.route('/product/details/:articleNumber').put(async(req, res) => {
+
+})/*  controller.route('/product/details/:_id').put(async(req, res) => {
     let { _id, title, category, imageURL, description, tag, price, rating  } = req.body
-    const item = await productSchema.findById(req.params.articleNumber)
+    const item = await productSchema.findById(req.params._id)
 
 if (!item) {
      let product = await productSchema.findOneAndUpdate({title, category, imageURL, description,
     tag, price, rating}, {
         
-        _id : req.params.articleNumber,  
+        _id : req.params._id,  
         title : title ? title : product.title,
         category : category ? category : product.category,
         imageURL : imageURL ? imageURL : product.imageURL,
@@ -194,18 +197,18 @@ if (!item) {
     
 
 // remove product
-controller.route('/:articleNumber').delete(async(req, res) => {
-    if (!req.params.articleNumber)
+controller.route('/:_id').delete(async(req, res) => {
+    if (!req.params._id)
     res.status(400).json('no article number was specified')
 else {
-    const item = await productSchema.findById(req.params.articleNumber)
+    const item = await productSchema.findById(req.params._id)
     if (item) {
        await productSchema.deleteOne(item)
-       res.status(200).json({text: `product with article number ${req.params.articleNumber} was deleted successfully`})
+       res.status(200).json({text: `product with article number ${req.params._id} was deleted successfully`})
    
     }
     else {
-       res.status(404).json({text: `product with article number ${req.params.articleNumber} was not found.`})
+       res.status(404).json({text: `product with article number ${req.params._id} was not found.`})
     }
 }
  
