@@ -106,7 +106,7 @@ controller.route('/product/details/:_id').get(async (req, res) => {
 
 }) 
 
-// secured routes
+// secured routes --NOT IN USE WITH GRAPHQL COMPONENTS
 controller.route('/').post(/* authorize,  */async(req, res) => {
     const { _id, title, category, imageURL, description, tag, price, rating  } = req.body
 
@@ -162,41 +162,11 @@ controller.route('/product/details/:_id').put(/* authorize,  */async(req, res) =
     }
 
 
-})/*  controller.route('/product/details/:_id').put(async(req, res) => {
-    let { _id, title, category, imageURL, description, tag, price, rating  } = req.body
-    const item = await productSchema.findById(req.params._id)
-
-if (!item) {
-     let product = await productSchema.findOneAndUpdate({title, category, imageURL, description,
-    tag, price, rating}, {
-        
-        _id : req.params._id,  
-        title : title ? title : product.title,
-        category : category ? category : product.category,
-        imageURL : imageURL ? imageURL : product.imageURL,
-        description : description ? description : product.description,
-        tag : tag ? tag :  product.tag, 
-        price : price ? price : product.price,
-        rating : rating ? rating : product.rating,
-
-    })
-    if (item) 
-    res.status(201).json({text: `Product with article number ${item.id} was updated successfully`})
-   
-    else
-    res.status(400).json({text: 'something went wrong when we tried to update the product.'})
-}
-
- })
- */
+})
 
 
 
-
-
-    
-
-// remove product
+// remove product 
 controller.route('/:_id').delete(async(req, res) => {
     if (!req.params._id)
     res.status(400).json('no article number was specified')
