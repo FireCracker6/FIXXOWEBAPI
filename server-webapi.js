@@ -17,7 +17,6 @@ app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
 
-
 app.use('/graphql', graphqlHTTP({
     schema: require('./schemas/graphqlSchema'),
     graphiql: true
@@ -37,3 +36,4 @@ const server = new ApolloServer({
 // initalize
 initMongoDB()
 app.listen(port, () => console.log(`Web API is running at http://localhost:${port}`))
+

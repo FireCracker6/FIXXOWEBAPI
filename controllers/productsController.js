@@ -166,7 +166,11 @@ controller.route('/product/details/:_id').put(/* authorize,  */async(req, res) =
 
 
 
-// remove product 
+
+
+    
+
+// remove product
 controller.route('/:_id').delete(async(req, res) => {
     if (!req.params._id)
     res.status(400).json('no article number was specified')

@@ -14,6 +14,7 @@ const authorize = (req, res, next) => {
         try {
         const accessToken = req.headers.authorization.split(' ')[1]
         const decodedAccessToken = jwt.verify(accessToken, process.env.JWT_SECRET)
+        console.log(accessToken)
         next()
     } catch {
         res.status(401).json()

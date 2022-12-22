@@ -4,11 +4,13 @@ const {GraphQLSchema, GraphQLObjectType, GraphQLID, GraphQLString, GraphQLList} 
 
 
 const Vendor = require('./mongodb/vendorSchema')
+const User = require('./mongodb/userSchema')
 const Product = require('./mongodb/productSchema')
 const ProductUpdate = require('./mongodb/productUpdateSchema')
 const { Query } = require('../graphql/resolvers')
 const { request } = require('express')
-
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 
 const ProductType = new GraphQLObjectType({
@@ -31,6 +33,31 @@ const ProductType = new GraphQLObjectType({
        
     })
 })
+const UserType = new GraphQLObjectType({
+    name: 'User',
+    fields: () => ({
+        _id: {type: GraphQLID },
+        firstName: { type: GraphQLString},
+        lastName: { type: GraphQLString},
+        email: { type: GraphQLString},
+        password: { type: GraphQLString},
+      
+   
+       
+    })
+})
+const UserLoginType = new GraphQLObjectType({
+    name: 'User',
+    fields: () => ({
+        _id: {type: GraphQLID },
+        email: { type: GraphQLString},
+        password: { type: GraphQLString},
+      
+   
+       
+    })
+})
+
 
 const UpdateType = new GraphQLObjectType({
     name: 'ProductUpdate',
@@ -102,6 +129,8 @@ const VendorType = new GraphQLObjectType({
 })
 
 
+
+
 const RootQuery = new graphql.GraphQLObjectType({
     name: 'RootQueryType', 
     fields: {
@@ -116,6 +145,19 @@ const RootQuery = new graphql.GraphQLObjectType({
             type: new graphql.GraphQLList(VendorType),
             resolve(parent, args) {
                 return Vendor.find({})
+            }
+        },
+        user: {
+            type: UserType,
+            args: { id: { type: graphql.GraphQLID } },
+            resolve(parent, args) {
+                return User.findById(args.id)
+            }
+        },
+        users: {
+            type: new graphql.GraphQLList(UserType),
+            resolve(parent, args) {
+                return User.find({})
             }
         },
 
@@ -165,7 +207,7 @@ const resolvers = {
     }
   };
   
-
+ 
 const Mutation = new GraphQLObjectType({
     
     Query: {
@@ -189,6 +231,45 @@ const Mutation = new GraphQLObjectType({
                     name: args.name
                 })
                 return vendor.save()
+            }
+        },
+        addUser: {
+            
+            type: UserType,
+            args: {
+                firstName: { type: GraphQLString },
+                lastName: { type: GraphQLString },
+                email: { type: GraphQLString },
+                password: { type: GraphQLString }
+
+          
+          
+            },
+            resolve(parent, args) {
+                var hash = bcrypt.hashSync(args.password, 10)
+                const user = new User({
+                    firstName: args.firstName,
+                    lastName: args.lastName,
+                    email: args.email,
+                    password: hash,
+                })
+                return user.save()
+            }
+        },
+        loginUser: {
+            
+            type: UserType,
+            args: {
+                _id: { type:  (GraphQLID)},
+                email: { type: GraphQLString },
+                password: { type: GraphQLString }
+
+          
+          
+            },
+            resolve(parent, args) {
+              
+                return User.findOne(args._id, args);
             }
         },
         addProduct: {
@@ -237,8 +318,8 @@ const Mutation = new GraphQLObjectType({
             }, 
             resolve(parent, args) {
              
-               
-                console.log(args._id, args.title)
+            
+                console.log(args._id, args.title, args.imageURL)
                 return Product.findByIdAndUpdate(args._id, args,  { new: true });
                
             
@@ -258,7 +339,7 @@ const Mutation = new GraphQLObjectType({
            rating: {type: GraphQLString},
            tag: {type: GraphQLString},
           
-         
+        
                 
             }, 
             resolve(parent, args) {
